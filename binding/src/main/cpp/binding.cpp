@@ -1,9 +1,16 @@
 #include <jni.h>
 #include <string>
+#include <iostream>
+
+#include "tun.hpp"
 
 // JNI method naming convention: Java_[package]_[ClassName]_[MethodName]
-extern "C" JNIEXPORT jstring JNICALL
-Java_me_spencernold_jrs_Main_helloFromCpp(JNIEnv* env, jclass clazz) {
-    std::string msg = "Hello from C++ binding!";
-    return env->NewStringUTF(msg.c_str());
+extern "C" JNIEXPORT jint JNICALL
+Java_me_spencernold_jrs_Binding_tun_1create(JNIEnv* env, jclass clazz) {
+    return tun::create();
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_me_spencernold_jrs_Binding_tun_1free(JNIEnv* env, jclass clazz, jint fd) {
+    return tun::free(fd);
 }
