@@ -25,3 +25,6 @@ out/
 
 # OSX
 .DS_Store
+
+# Project
+prepared/

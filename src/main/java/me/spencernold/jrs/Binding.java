@@ -7,5 +7,7 @@ class Binding {
     }
 
     public static native int tun_create();
+    public static native int tun_bind(int fd);
+    public static native int tun_listen(int fd);
     public static native void tun_free(int fd);
 }

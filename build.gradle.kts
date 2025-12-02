@@ -6,7 +6,7 @@ plugins {
 }
 
 java {
-	toolchain.languageVersion.set(JavaLanguageVersion.of(21))
+	toolchain.languageVersion.set(JavaLanguageVersion.of(8))
 }
 
 application {
@@ -19,6 +19,26 @@ tasks.withType<JavaCompile> {
 
 tasks.named<JavaExec>("run") {
 	dependsOn(":binding:build")
+	jvmArgs = listOf("-Djava.library.path=${getNativeBuildDirectory()}")
+}
+
+tasks.register<Copy>("copyJarBuildOutput") {
+	dependsOn(":build")
+	from("${file(layout.buildDirectory).absolutePath}/libs")
+	into("prepared")
+}
+
+tasks.register<Copy>("copyNativeBuildOutput") {
+	dependsOn(":binding:build")
+	from(getNativeBuildDirectory())
+	into("prepared/natives")
+}
+
+tasks.register("prepare") {
+	dependsOn(":copyJarBuildOutput", ":copyNativeBuildOutput")
+}
+
+private fun getNativeBuildDirectory(): String {
 	val os = OperatingSystem.current()
 	val arch = System.getProperty("os.arch")
 	val osPart = when {
@@ -32,5 +52,5 @@ tasks.named<JavaExec>("run") {
 		"x86_64", "amd64" -> "x86_64"
 		else -> error("Unsupported architecture: $arch")
 	}
-	jvmArgs = listOf("-Djava.library.path=binding/build/lib/main/debug/$osPart/$archPart")
+	return "binding/build/lib/main/debug/$osPart/$archPart"
 }
