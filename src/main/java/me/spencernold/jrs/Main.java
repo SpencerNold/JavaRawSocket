@@ -1,18 +1,22 @@
 package me.spencernold.jrs;
 
-import java.io.IOException;
-
 public class Main {
 
     public static void main(String[] args) {
-        try {
-            String device = PacketCaptureBinding.getDefaultDevice();
-            long handle = PacketCaptureBinding.open(device);
-            PacketCaptureBinding.listen(handle, (h, bytes, length) -> {
-                System.out.println("Length: " + length);
-            });
-            PacketCaptureBinding.close(handle);
-        } catch (IOException e) {
+        try (RawSocket socket = new RawSocket()) {
+            new Thread(() -> {
+                socket.listen((s, data) -> {
+                    System.out.println("Length: " + data.length);
+                });
+            }).start();
+            while (true) {
+                try {
+                    Thread.sleep(1000L);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
