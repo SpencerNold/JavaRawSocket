@@ -1,25 +1,18 @@
-#include <iostream>
-
 #include <jni.h>
 
+#include "upcap.hpp"
+
 // JNI method naming convention: Java_[package]_[ClassName]_[MethodName]
-extern "C" JNIEXPORT jint JNICALL
-Java_me_spencernold_jrs_Binding_tun_1create(JNIEnv* env, jclass clazz) {
-    std::cout << "Create" << std::endl;
-    return 0;
-}
-
-extern "C" JNIEXPORT void JNICALL
-Java_me_spencernold_jrs_Binding_tun_1bind(JNIEnv* env, jclass clazz, jint fd) {
-    std::cout << "Bind" << std::endl;
-}
-
-extern "C" JNIEXPORT void JNICALL
-Java_me_spencernold_jrs_Binding_tun_1listen(JNIEnv* env, jclass clazz, jint fd) {
-    std::cout << "Listen" << std::endl;
-}
-
-extern "C" JNIEXPORT void JNICALL
-Java_me_spencernold_jrs_Binding_tun_1free(JNIEnv* env, jclass clazz, jint fd) {
-    std::cout << "Free" << std::endl;
+extern "C" JNIEXPORT jstring JNICALL
+Java_me_spencernold_jrs_PacketCaptureBinding_getDefaultDevice(JNIEnv* env, jclass clazz) {
+    try {
+        std::string device = upcap::getDefaultDevice();
+        if (device.empty()) 
+            return nullptr;
+        return env->NewStringUTF(device.c_str());
+    } catch (const std::exception& e) {
+        jclass exc = env->FindClass("java/lang/RuntimeException");
+        env->ThrowNew(exc, e.what());
+        return nullptr;
+    }
 }

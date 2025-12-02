@@ -1,7 +1,6 @@
 import org.gradle.internal.os.OperatingSystem
 import java.io.BufferedReader
 import java.io.InputStreamReader
-import java.util.Arrays
 
 plugins {
     `cpp-library`
