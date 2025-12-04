@@ -1,6 +1,6 @@
 #include <jni.h>
 
-#include "upcap.hpp"
+#include "upcap/upcap.hpp"
 
 #include <iostream>
 

@@ -1,6 +1,6 @@
 #ifdef __MACH__
 
-#include "../upcap.hpp"
+#include "upcap.hpp"
 
 #include <iostream>
 

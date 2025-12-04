@@ -2,10 +2,10 @@ package me.spencernold.jrs;
 
 import java.io.IOException;
 
-class PacketCaptureBinding {
+class PacketCaptureBinding extends Binding {
 
     static {
-        System.loadLibrary("binding");
+        ensureBindingLoaded();
     }
 
     public static native String getDefaultDevice() throws IOException;
