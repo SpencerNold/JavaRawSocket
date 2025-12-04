@@ -5,6 +5,8 @@ import java.util.regex.Pattern;
 
 public class MediumAccessControl {
 
+    private static byte[] macCache = null;
+
     public static byte[] encodeAddress(String mac) {
         Pattern pattern = Pattern.compile("(?:[A-Fa-f0-9]{2}:){5}[A-Fa-f0-9]{2}");
         Matcher matcher = pattern.matcher(mac);
@@ -26,7 +28,9 @@ public class MediumAccessControl {
         return String.join(":", values);
     }
 
-    public static byte[] getSystemMacAddress() {
-        return new byte[0];
+    public static byte[] get() {
+        if (macCache == null)
+            macCache = SystemBinding.getMacAddress();
+        return macCache;
     }
 }
