@@ -1,5 +1,6 @@
 package me.spencernold.jrs;
 
+import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,7 +35,11 @@ public class InternetProtocol4 {
 
     public static int getSystemIPv4() {
         if (!ipv4Stored) {
-            ipv4Cache = SystemBinding.getIPv4Address();
+            try {
+                ipv4Cache = SystemBinding.getIPv4Address();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
             ipv4Stored = true;
         }
         return ipv4Cache;
@@ -42,7 +47,11 @@ public class InternetProtocol4 {
 
     public static int getDefaultGateway() {
         if (!defaultGatewayStored) {
-            defaultGatewayCache = SystemBinding.getDefaultGateway();
+            try {
+                defaultGatewayCache = SystemBinding.getDefaultGateway();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
             defaultGatewayStored = true;
         }
         return defaultGatewayCache;

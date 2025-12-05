@@ -1,11 +1,14 @@
 package me.spencernold.jrs;
 
+import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MediumAccessControl {
 
-    private static byte[] macCache = null;
+    private static byte[] systemMacCache = null;
+    private static byte[] routerMacCache = null;
+    private static int currentRouterIPv4 = 0;
 
     public static byte[] encode(String mac) {
         Pattern pattern = Pattern.compile("(?:[A-Fa-f0-9]{2}:){5}[A-Fa-f0-9]{2}");
@@ -28,9 +31,32 @@ public class MediumAccessControl {
         return String.join(":", values);
     }
 
-    public static byte[] get() {
-        if (macCache == null)
-            macCache = SystemBinding.getMacAddress();
-        return macCache;
+    public static byte[] getSystemMac() {
+        if (systemMacCache == null) {
+            try {
+                systemMacCache = SystemBinding.getMacAddress();
+            } catch (IOException e) {
+                throw new RuntimeException(e); // Shouldn't* happen
+            }
+        }
+        return systemMacCache;
+    }
+
+    public static byte[] getRouterMac() {
+        int gateway = InternetProtocol4.getDefaultGateway();
+        if (routerMacCache == null || gateway != currentRouterIPv4) {
+            currentRouterIPv4 = gateway;
+            return getStoredMac(gateway);
+        }
+        return routerMacCache;
+    }
+
+    public static byte[] getStoredMac(int ipv4) {
+        try {
+            return SystemBinding.getDeviceMacAddress(ipv4);
+        } catch (IOException ignored) {
+            Logger.info("Sending ARP request to %s...", InternetProtocol4.decode(ipv4));
+            return Common.sendMacRequest(ipv4);
+        }
     }
 }

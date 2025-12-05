@@ -3,7 +3,7 @@ package me.spencernold.jrs;
 public class Common {
 
     public static byte[] sendMacRequest(int ipv4) {
-        byte[] src = MediumAccessControl.get();
+        byte[] src = MediumAccessControl.getSystemMac();
         byte[] dst = new byte[]{(byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF};
         Ethernet eth = new Ethernet(src, dst, (short) 0x0806);
         int spa = InternetProtocol4.getSystemIPv4();

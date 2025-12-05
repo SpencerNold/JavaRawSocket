@@ -47,15 +47,15 @@ namespace sys {
         return { v_mac, i_ipv4 };
     }
 
-    uint32_t getDefaultGateway(std::string interface) {
+    uint32_t getDefaultGateway() {
         int mib[6] = { CTL_NET, PF_ROUTE, 0, AF_INET, NET_RT_FLAGS, RTF_GATEWAY };
         size_t needed;
         if (sysctl(mib, 6, NULL, &needed, NULL, 0) < 0) {
-            return 0;
+            throw std::runtime_error(std::string("Default gateway not found"));
         }
         char data[needed];
         if (sysctl(mib, 6, data, &needed, NULL, 0)) {
-            return 0;
+            throw std::runtime_error(std::string("Default gateway not found"));
         }
         char* buf = (char*) data;
         char* lim = buf + needed;
@@ -87,6 +87,39 @@ namespace sys {
             }
         }
         throw std::runtime_error(std::string("Default gateway not found"));
+    }
+
+    std::vector<uint8_t> getRouterMacAddress(uint32_t address) {
+        std::vector<uint8_t> v_mac;
+        int mib[6] = { CTL_NET, PF_ROUTE, 0, AF_INET, NET_RT_FLAGS, RTF_LLINFO };
+        size_t needed;
+        if (sysctl(mib, 6, NULL, &needed, NULL, 0) < 0) {
+            throw std::runtime_error(std::string("Router mac not found"));
+        }
+        char data[needed];
+        if (sysctl(mib, 6, data, &needed, NULL, 0) < 0) {
+            throw std::runtime_error(std::string("Router mac not found"));
+        }
+        char* buf = (char*) data;
+        char* lim = buf + needed;
+        char* next;
+        struct rt_msghdr* rtm;
+        struct sockaddr_inarp* sin;
+        struct sockaddr_dl* sdl;
+        for (next = buf; next < lim; next += rtm->rtm_msglen) {
+            rtm = (struct rt_msghdr*) next;
+            sin = (struct sockaddr_inarp*) (rtm + 1);
+            sdl = (struct sockaddr_dl*) (sin + 1);
+            if (address != sin->sin_addr.s_addr) {
+                continue;
+            }
+            unsigned char* mac_addr = (unsigned char*) LLADDR(sdl);
+            for (int i = 0; i < 6; i++) {
+                v_mac.push_back(mac_addr[i]);
+            }
+            return v_mac;
+        }
+        throw std::runtime_error(std::string("Router mac not found"));
     }
 }
 

@@ -5,5 +5,6 @@
 
 namespace sys {
     std::pair<std::vector<uint8_t>, uint32_t> getSystemAddresses(std::string);
-    uint32_t getDefaultGateway(std::string);
+    uint32_t getDefaultGateway();
+    std::vector<uint8_t> getRouterMacAddress(uint32_t);
 }
