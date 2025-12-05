@@ -7,6 +7,8 @@ public class InternetProtocol4 {
 
     private static int ipv4Cache;
     private static boolean ipv4Stored;
+    private static int defaultGatewayCache;
+    private static boolean defaultGatewayStored;
 
     public static String decode(int ipv4) {
         return ((ipv4 >> 24) & 0xFF) + "." + ((ipv4 >> 16) & 0xFF) + "." + ((ipv4 >> 8) & 0xFF) + "." + (ipv4 & 0xFF);
@@ -30,11 +32,19 @@ public class InternetProtocol4 {
         return value;
     }
 
-    public static int get() {
+    public static int getSystemIPv4() {
         if (!ipv4Stored) {
             ipv4Cache = SystemBinding.getIPv4Address();
             ipv4Stored = true;
         }
         return ipv4Cache;
+    }
+
+    public static int getDefaultGateway() {
+        if (!defaultGatewayStored) {
+            defaultGatewayCache = SystemBinding.getDefaultGateway();
+            defaultGatewayStored = true;
+        }
+        return defaultGatewayCache;
     }
 }
