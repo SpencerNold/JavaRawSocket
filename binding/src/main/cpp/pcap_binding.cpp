@@ -82,6 +82,12 @@ Java_me_spencernold_jrs_PacketCaptureBinding_listen(JNIEnv* env, jclass clazz, j
 }
 
 extern "C" JNIEXPORT void JNICALL
+Java_me_spencernold_jrs_PacketCaptureBinding_ignore(JNIEnv* env, jclass clazz, jlong address) {
+    upcap::Handle* handle = (upcap::Handle*) address;
+    upcap::ignore(handle);
+}
+
+extern "C" JNIEXPORT void JNICALL
 Java_me_spencernold_jrs_PacketCaptureBinding_close(JNIEnv* env, jclass clazz, jlong address) {
     if (globalListener) {
         env->DeleteGlobalRef(globalListener);

@@ -7,7 +7,7 @@ public class MediumAccessControl {
 
     private static byte[] macCache = null;
 
-    public static byte[] encodeAddress(String mac) {
+    public static byte[] encode(String mac) {
         Pattern pattern = Pattern.compile("(?:[A-Fa-f0-9]{2}:){5}[A-Fa-f0-9]{2}");
         Matcher matcher = pattern.matcher(mac);
         if (!matcher.matches())
@@ -19,7 +19,7 @@ public class MediumAccessControl {
         return bytes;
     }
 
-    public static String decodeAddress(byte[] bytes) {
+    public static String decode(byte[] bytes) {
         if (bytes.length != 6)
             throw new IllegalArgumentException(String.format("input %d bytes, mac addresses must be 6", bytes.length));
         String[] values = new String[6];

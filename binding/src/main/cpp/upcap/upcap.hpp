@@ -10,5 +10,6 @@ namespace upcap {
     Handle* open(std::string);
     void send(Handle*, const unsigned char*, int);
     void listen(Handle*, void (*)(Handle*, const unsigned char*, int));
+    void ignore(Handle*);
     void close(Handle*);
 }

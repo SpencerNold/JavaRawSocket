@@ -2,7 +2,7 @@ package me.spencernold.jrs;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 public class RawSocket implements AutoCloseable {
 
@@ -24,13 +24,20 @@ public class RawSocket implements AutoCloseable {
         send(bytes, 0, bytes.length);
     }
 
-    public void listen(BiConsumer<RawSocket, byte[]> consumer) {
-        final RawSocket socket = this;
+    public void send(NetworkByteBuf buf) {
+        send(buf.internal());
+    }
+
+    public void listen(Consumer<byte[]> consumer) {
         PacketCaptureBinding.listen(handle, (handle1, bytes, length) -> {
             if (bytes.length != length)
                 bytes = Arrays.copyOfRange(bytes, 0, length);
-            consumer.accept(socket, bytes);
+            consumer.accept(bytes);
         });
+    }
+
+    public void ignore() {
+        PacketCaptureBinding.ignore(handle);
     }
 
     @Override

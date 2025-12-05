@@ -12,6 +12,7 @@ class PacketCaptureBinding extends Binding {
     public static native long open(String device) throws IOException;
     public static native void send(long handle, byte[] bytes, int offset, int length);
     public static native void listen(long handle, Listener listener);
+    public static native void ignore(long handle);
     public static native void close(long handle);
 
     @FunctionalInterface

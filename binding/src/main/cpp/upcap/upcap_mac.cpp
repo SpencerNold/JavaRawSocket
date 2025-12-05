@@ -56,6 +56,10 @@ namespace upcap {
         }
     }
 
+    void ignore(Handle* handle) {
+        pcap_breakloop(handle->handle);
+    }
+
     void close(Handle* handle) {
         pcap_close(handle->handle);
         delete(handle);

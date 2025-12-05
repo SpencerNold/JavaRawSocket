@@ -8,11 +8,11 @@ public class InternetProtocol4 {
     private static int ipv4Cache;
     private static boolean ipv4Stored;
 
-    public static String decodeAddress(int ipv4) {
+    public static String decode(int ipv4) {
         return ((ipv4 >> 24) & 0xFF) + "." + ((ipv4 >> 16) & 0xFF) + "." + ((ipv4 >> 8) & 0xFF) + "." + (ipv4 & 0xFF);
     }
 
-    public static int encodeAddress(String ipv4) {
+    public static int encode(String ipv4) {
         Pattern pattern = Pattern.compile("(?:[0-9]{1,3}\\.){3}[0-9]{1,3}");
         Matcher matcher = pattern.matcher(ipv4);
         if (!matcher.matches())
