@@ -46,7 +46,7 @@ public class MediumAccessControl {
         int gateway = InternetProtocol4.getDefaultGateway();
         if (routerMacCache == null || gateway != currentRouterIPv4) {
             currentRouterIPv4 = gateway;
-            return getStoredMac(gateway);
+            routerMacCache = getStoredMac(gateway);
         }
         return routerMacCache;
     }
