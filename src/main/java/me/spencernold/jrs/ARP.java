@@ -1,6 +1,6 @@
 package me.spencernold.jrs;
 
-public class Common {
+public class ARP {
 
     public static byte[] sendMacRequest(int ipv4) {
         byte[] src = MediumAccessControl.getSystemMac();

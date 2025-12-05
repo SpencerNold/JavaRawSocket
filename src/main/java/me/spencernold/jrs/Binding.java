@@ -1,6 +1,6 @@
 package me.spencernold.jrs;
 
-public class Binding {
+class Binding {
 
     private static boolean loaded;
 

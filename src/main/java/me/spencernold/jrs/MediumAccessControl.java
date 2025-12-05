@@ -36,7 +36,7 @@ public class MediumAccessControl {
             try {
                 systemMacCache = SystemBinding.getMacAddress();
             } catch (IOException e) {
-                throw new RuntimeException(e); // Shouldn't* happen
+                throw new RuntimeException(e); // Shouldn't* happen, why wouldn't the computer know it's own mac?
             }
         }
         return systemMacCache;
@@ -56,7 +56,7 @@ public class MediumAccessControl {
             return SystemBinding.getDeviceMacAddress(ipv4);
         } catch (IOException ignored) {
             Logger.info("Sending ARP request to %s...", InternetProtocol4.decode(ipv4));
-            return Common.sendMacRequest(ipv4);
+            return ARP.sendMacRequest(ipv4);
         }
     }
 }

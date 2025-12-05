@@ -1,6 +1,6 @@
 package me.spencernold.jrs;
 
-public class Pointer<T> {
+class Pointer<T> {
 
     private T value;
 
