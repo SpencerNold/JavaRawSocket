@@ -2,7 +2,7 @@ package me.spencernold.jrs;
 
 public class AddressResolutionProtocol extends Protocol {
 
-    public static final int HEADER_SIZE = 28;
+    public static final int MIN_HEADER_SIZE = 28;
 
     private short hardwareType;
     private short protocolType;
@@ -72,6 +72,11 @@ public class AddressResolutionProtocol extends Protocol {
         return targetProtocolAddress == null || this.targetProtocolAddress == targetProtocolAddress;
     }
 
+    @Override
+    public int getExpectedHeaderSize() {
+        return MIN_HEADER_SIZE;
+    }
+
     public short getHardwareType() {
         return hardwareType;
     }
@@ -106,11 +111,6 @@ public class AddressResolutionProtocol extends Protocol {
 
     public int getTargetProtocolAddress() {
         return targetProtocolAddress;
-    }
-
-    @Override
-    public int getHeaderSize() {
-        return HEADER_SIZE;
     }
 
     public static AddressResolutionProtocol ipv4(byte[] senderMacAddress, int senderIPv4Address, byte[] targetMacAddress, int targetIPv4Address) {

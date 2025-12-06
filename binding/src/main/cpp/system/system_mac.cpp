@@ -121,6 +121,14 @@ namespace sys {
         }
         throw std::runtime_error(std::string("Router mac not found"));
     }
+
+    uint16_t toNetworkOrder(uint16_t i) {
+        return htons(i);
+    }
+
+    uint32_t toNetworkOrder(uint32_t i) {
+        return htonl(i);
+    }
 }
 
 #endif

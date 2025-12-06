@@ -11,6 +11,12 @@ public class NetworkStack {
         this.stack = stack;
     }
 
+    private NetworkStack init() {
+        for (Protocol protocol : stack)
+            protocol.stack = this;
+        return this;
+    }
+
     public <T extends Protocol> T get(Class<T> clazz) {
         for (Protocol protocol : stack) {
             if (clazz.isAssignableFrom(protocol.getClass()))
@@ -22,7 +28,7 @@ public class NetworkStack {
     public NetworkByteBuf allocate() {
         int size = 0;
         for (Protocol protocol : stack)
-            size += protocol.getHeaderSize();
+            size += protocol.getExpectedHeaderSize();
         return new NetworkByteBuf(size, false);
     }
 
@@ -40,6 +46,14 @@ public class NetworkStack {
         Deque<Protocol> stack = new ArrayDeque<>();
         stack.addLast(eth);
         stack.addLast(arp);
-        return new NetworkStack(stack);
+        return new NetworkStack(stack).init();
+    }
+
+    public static NetworkStack tcp(Ethernet eth, InternetProtocol ip, TransmissionControlProtocol tcp) {
+        Deque<Protocol> stack = new ArrayDeque<>();
+        stack.addLast(eth);
+        stack.addLast(ip);
+        stack.addLast(tcp);
+        return new NetworkStack(stack).init();
     }
 }

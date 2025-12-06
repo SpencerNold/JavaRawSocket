@@ -3,10 +3,10 @@ package me.spencernold.jrs;
 public class ARP {
 
     public static byte[] sendMacRequest(int ipv4) {
-        byte[] src = MediumAccessControl.getSystemMac();
+        byte[] src = Mac.getSystemAddress();
         byte[] dst = new byte[]{(byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF};
         Ethernet eth = new Ethernet(src, dst, (short) 0x0806);
-        int spa = InternetProtocol4.getSystemIPv4();
+        int spa = IPv4.getSystemAddress();
         AddressResolutionProtocol arp = AddressResolutionProtocol.ipv4(src, spa, dst, ipv4);
         NetworkStack stack = NetworkStack.arp(eth, arp);
         NetworkByteBuf bufOut = stack.allocate();

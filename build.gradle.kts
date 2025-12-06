@@ -1,3 +1,12 @@
+/*
+
+On MacOS: The OS is VERY closed down! These may help if you run into issues of the TCP flags being replaced.
+
+sudo sysctl net.inet.tcp.blackhole=2
+sudo sysctl net.inet.tcp.drop_synfin=0
+
+ */
+
 import org.gradle.internal.os.OperatingSystem
 
 plugins {

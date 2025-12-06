@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class MediumAccessControl {
+public class Mac {
 
     private static byte[] systemMacCache = null;
     private static byte[] routerMacCache = null;
@@ -31,7 +31,7 @@ public class MediumAccessControl {
         return String.join(":", values);
     }
 
-    public static byte[] getSystemMac() {
+    public static byte[] getSystemAddress() {
         if (systemMacCache == null) {
             try {
                 systemMacCache = SystemBinding.getMacAddress();
@@ -42,20 +42,20 @@ public class MediumAccessControl {
         return systemMacCache;
     }
 
-    public static byte[] getRouterMac() {
-        int gateway = InternetProtocol4.getDefaultGateway();
+    public static byte[] getRouterAddress() {
+        int gateway = IPv4.getDefaultGateway();
         if (routerMacCache == null || gateway != currentRouterIPv4) {
             currentRouterIPv4 = gateway;
-            routerMacCache = getStoredMac(gateway);
+            routerMacCache = getStoredAddress(gateway);
         }
         return routerMacCache;
     }
 
-    public static byte[] getStoredMac(int ipv4) {
+    public static byte[] getStoredAddress(int ipv4) {
         try {
             return SystemBinding.getDeviceMacAddress(ipv4);
         } catch (IOException ignored) {
-            Logger.info("Sending ARP request to %s...", InternetProtocol4.decode(ipv4));
+            Logger.info("Sending ARP request to %s...", IPv4.decode(ipv4));
             return ARP.sendMacRequest(ipv4);
         }
     }

@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class InternetProtocol4 {
+public class IPv4 {
 
     private static int ipv4Cache;
     private static boolean ipv4Stored;
@@ -33,7 +33,7 @@ public class InternetProtocol4 {
         return value;
     }
 
-    public static int getSystemIPv4() {
+    public static int getSystemAddress() {
         if (!ipv4Stored) {
             try {
                 ipv4Cache = SystemBinding.getIPv4Address();

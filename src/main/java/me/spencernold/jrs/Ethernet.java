@@ -2,7 +2,7 @@ package me.spencernold.jrs;
 
 public class Ethernet extends Protocol {
 
-    public static final int HEADER_SIZE = 14;
+    public static final int MIN_HEADER_SIZE = 14;
 
     private byte[] src;
     private byte[] dst;
@@ -15,21 +15,25 @@ public class Ethernet extends Protocol {
     }
 
     public Ethernet(String src, String dst, short type) {
-        this(MediumAccessControl.encode(src), MediumAccessControl.encode(dst), type);
+        this(Mac.encode(src), Mac.encode(dst), type);
     }
 
     @Override
     public void write(NetworkByteBuf buf) {
+        start = buf.getCursor();
         buf.write(dst);
         buf.write(src);
         buf.writeShort(type);
+        end = buf.getCursor();
     }
 
     @Override
     public void read(NetworkByteBuf buf) {
+        start = buf.getCursor();
         dst = buf.read(6);
         src = buf.read(6);
         type = buf.readShort();
+        end = buf.getCursor();
     }
 
     public boolean is(byte[] src, byte[] dst, Short type) {
@@ -38,6 +42,11 @@ public class Ethernet extends Protocol {
         if (dst != null && !NetworkByteBuf.compare(this.dst, 0, dst, 0, 6))
             return false;
         return type == null || this.type == type;
+    }
+
+    @Override
+    public int getExpectedHeaderSize() {
+        return MIN_HEADER_SIZE; // + options
     }
 
     public byte[] getSourceMac() {
@@ -50,10 +59,5 @@ public class Ethernet extends Protocol {
 
     public short getType() {
         return type;
-    }
-
-    @Override
-    public int getHeaderSize() {
-        return HEADER_SIZE;
     }
 }

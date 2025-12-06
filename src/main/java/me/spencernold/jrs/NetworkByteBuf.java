@@ -13,13 +13,17 @@ public class NetworkByteBuf {
     }
 
     NetworkByteBuf(byte[] bytes, boolean reading) {
-        this.internal = bytes;
+        this.internal = Arrays.copyOf(bytes, bytes.length);
         this.index = 0;
         this.state = reading;
     }
 
     byte[] internal() {
-        return Arrays.copyOfRange(internal, 0, index);
+        return internal(0, index);
+    }
+
+    byte[] internal(int start, int end) {
+        return Arrays.copyOfRange(internal, start, end);
     }
 
     public void write(byte[] bytes) {
@@ -39,7 +43,7 @@ public class NetworkByteBuf {
         this.index = clamp(index, 0, internal.length);
     }
 
-    public int getWriterPosition() {
+    public int getCursor() {
         return index;
     }
 
@@ -92,6 +96,14 @@ public class NetworkByteBuf {
         int b3 = internal[index++] & 0xFF;
         int b4 = internal[index++] & 0xFF;
         return (b1 << 24) | (b2 << 16) | (b3 << 8) | b4;
+    }
+
+    public void writeIPv4(String ipv4) {
+        writeInt(IPv4.encode(ipv4));
+    }
+
+    public String readIPv4() {
+        return IPv4.decode(readInt());
     }
 
     private int clamp(int i, int min, int max) {
